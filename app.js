@@ -5,6 +5,7 @@ var upload = multer();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var exphandlebars = require('express-handlebars');
+var request = require("request");
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,9 +18,24 @@ app.set('view engine', 'handlebars');
 
 app.get('/', function (req, res) {
     var a;
-    a = getData();
-    console.log(a);
-    // res.render('users', a, { title: "heheheh"});
+    var dataDumps;
+
+    var options = { method: 'GET',
+    url: 'http://13.67.55.177:8445/users',
+    headers: 
+    { 'postman-token': 'a7462e73-e867-f4e7-c8ec-da48dcef8f7e',
+        'cache-control': 'no-cache' } };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        // console.log(response);
+        // console.log(body);
+        dataDumps = JSON.parse(body);
+        // return body;
+        console.log(dataDumps.values);
+        res.render('users', dataDumps.values);
+    });
 });
 
 app.get('/tambahmatkul', function (req, res) {
@@ -36,34 +52,12 @@ app.get('/tambahmahasiswa', function (req, res) {
     res.render('addmahasiswa', { title: "heheheh"});
 });
 
-app.post('/tambahmahasiswa1', function (req, res) {
+app.post('/tambahmahasiswa', function (req, res) {
     var data = req.body;
-    var dumps;
-    dumps = addMahasiswa(data.nrp, data.nama, data.password);
-    console.log(dumps);
-    res.render('users', { title: "heheheh"});
+    addMahasiswa(data.nrp, data.nama, data.password);
+    res.redirect('/')
 });
 
-function getData(){
-    var request = require("request");
-    var dataDumps;
-
-    var options = { method: 'GET',
-    url: 'http://13.67.55.177:8445/users',
-    headers: 
-    { 'postman-token': 'a7462e73-e867-f4e7-c8ec-da48dcef8f7e',
-        'cache-control': 'no-cache' } };
-
-    request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-
-    console.log(body);
-    // return body;
-    dataDumps = JSON.parse(body);
-    });
-    return dataDumps;
-
-}
 
 function addMahasiswa(nrp, nama, pass){
     var request = require("request");
