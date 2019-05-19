@@ -144,6 +144,74 @@ app.post('/tambahmatkul', function (req, res) {
     });
 });
 
+app.route('/tambahjadwal')
+    .get(function (req, res) {
+        res.render('tambahJadwal', { title: "Tambah Jadwal Mata Kuliah"});
+    })
+    .post(function (req, res) {
+        var data = req.body;
+        var dumps;
+        var options = { 
+            method: 'POST',
+            url: 'http://13.67.55.177:8445/tambahjadwal',
+            headers: {
+                'postman-Token': '52a8a49e-1fe1-4cd3-994d-74bb3db7d6d6',
+                'cache-control': 'no-cache',
+                'content-type': 'application/x-www-form-urlencoded'
+            },
+            form: { 
+                fk_kode_mk: data.fk_kode_mk, 
+                pertemuan: data.pertemuan, 
+                jam_masuk: data.jam_masuk,
+                jam_pulang: data.jam_pulang,
+                ruang: data.ruang,
+                // hari: 'senin'
+            }
+        };
+
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+
+            console.log(response);
+            console.log(body);
+            dumps = JSON.parse(body);
+            res.render('tambahJadwalSukses', dumps);
+
+        });
+    });
+
+app.route('/tambahpeserta')
+    .get(function (req, res) {
+        res.render('tambahPeserta', { title: "Tambah Mahasiswa Mata Kuliah"});
+    })
+    .post(function (req, res) {
+        var data = req.body;
+        var dumps;
+        var options = { 
+            method: 'POST',
+            url: 'http://13.67.55.177:8445/tambahpeserta/'+ data.nrp + '/' + data.kode_mk,
+            headers: {
+                'postman-Token': '52a8a49e-1fe1-4cd3-994d-74bb3db7d6d6',
+                'cache-control': 'no-cache',
+                'content-type': 'application/x-www-form-urlencoded'
+            },
+            form: { 
+                kode_mk: data.kode_mk, 
+                nrp: data.nrp, 
+            }
+        };
+
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+
+            console.log(response);
+            console.log(body);
+            dumps = JSON.parse(body);
+            res.render('tambahPesertaSukses', dumps);
+
+        });
+    });
+
 app.get('/tambahmahasiswa', function (req, res) {
     res.render('addmahasiswa', { title: "Tambah Mahasiswa"});
 });
@@ -151,7 +219,7 @@ app.get('/tambahmahasiswa', function (req, res) {
 app.post('/tambahmahasiswa', function (req, res) {
     var data = req.body;
     addMahasiswa(data.nrp, data.nama, data.password);
-    res.redirect('/')
+    res.redirect('/');
 });
 
 
