@@ -123,8 +123,25 @@ app.get('/tambahmatkul', function (req, res) {
 
 app.post('/tambahmatkul', function (req, res) {
     var data = req.body;
-    addmatkul(data.kode_mk, data.mata_kuliah, data.kelas);
-    // res.render('tambahMatkul', { title: "heheheh"});
+    var dumps;
+    var options = { method: 'POST',
+        url: 'http://13.67.55.177:8445/tambahmatkul',
+        headers: 
+        { 'postman-token': '832db1a0-1f76-486b-7bff-a20709fb99cc',
+            'cache-control': 'no-cache',
+            'content-type': 'application/x-www-form-urlencoded' },
+        form: { kode_mk: data.kode_mk, mata_kuliah: data.mata_kuliah, kelas: data.kelas }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        console.log(response);
+        console.log(body);
+        dumps = JSON.parse(body);
+        res.render('tambahMatkulsukses', dumps);
+
+    });
 });
 
 app.get('/tambahmahasiswa', function (req, res) {
