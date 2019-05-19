@@ -17,7 +17,6 @@ app.set('view engine', 'handlebars');
 
 
 app.get('/', function (req, res) {
-    var a;
     var dataDumps;
 
     var options = { method: 'GET',
@@ -38,8 +37,88 @@ app.get('/', function (req, res) {
     });
 });
 
+app.get('/rekap/:kode_mk', function(req, res){
+    var kode_mk = req.params.kode_mk;
+    var request = require("request");
+
+    var options = {
+        method: 'GET',
+        url: 'http://13.67.55.177:8445/rekap/' + kode_mk,
+        headers:
+        {
+            'postman-token': '184d17e1-52fb-0c40-469a-f37113bab8b3',
+            'cache-control': 'no-cache'
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        console.log(body);        
+        var obj = JSON.parse(body);
+        console.log(obj.values.length);
+        res.render('rekap_matakuliah', obj.values);
+    });
+
+});
+
+app.get('/rekap/:kode_mk/:id_pertemuan', function (req, res) {
+    var kode_mk = req.params.kode_mk;
+    var id_pertemuan = req.params.id_pertemuan;
+
+    var request = require("request");
+
+    var options = {
+        method: 'GET',
+        url: 'http://13.67.55.177:8445/rekap/' + kode_mk + '/' + id_pertemuan,
+        headers:
+        {
+            'postman-token': '4490d158-8e70-54e3-2028-2aa0976942e3',
+            'cache-control': 'no-cache'
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        console.log(body);
+        var obj = JSON.parse(body);
+        console.log(obj.values);
+        res.render('pertemu_rekap_matakuliah', obj.values);
+        
+    });
+
+});
+
+app.get('/rekapmahasiswa/:nrp/:kode_mk', function (req, res) {
+    var nrp = req.params.nrp;
+    var kode_mk = req.params.kode_mk;
+    
+    var request = require("request");
+
+    var options = {
+        method: 'GET',
+        url: 'http://13.67.55.177:8445/rekapmahasiswa/' + nrp + '/' + kode_mk + '/',
+        headers:
+        {
+            'postman-token': '1b0644c0-e77c-46b5-ca44-de94bf042840',
+            'cache-control': 'no-cache'
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        console.log(body);
+        var obj = JSON.parse(body);
+        console.log(obj.values);
+        res.render('rekap_mahasiswa', obj.values);
+    });
+
+});
+
 app.get('/tambahmatkul', function (req, res) {
-    res.render('tambahMatkul', { title: "heheheh"});
+    res.render('tambahMatkul', { title: "Tambah Mata Kuliah"});
 });
 
 app.post('/tambahmatkul', function (req, res) {
@@ -49,7 +128,7 @@ app.post('/tambahmatkul', function (req, res) {
 });
 
 app.get('/tambahmahasiswa', function (req, res) {
-    res.render('addmahasiswa', { title: "heheheh"});
+    res.render('addmahasiswa', { title: "Tambah Mahasiswa"});
 });
 
 app.post('/tambahmahasiswa', function (req, res) {

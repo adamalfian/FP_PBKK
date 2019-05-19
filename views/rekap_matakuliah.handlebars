@@ -1,0 +1,22 @@
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Kode Mata Kuliah</th>
+        <th>Nama Mata Kuliah</th>
+        <th>Kelas</th>
+        <th>Nama Dosen</th>
+        <th>Semester</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each this}}
+        <tr>
+            <td>{{kode_mk}}</td>
+            <td>{{mata_kuliah}}</td>
+            <td>{{kelas}}</td>
+            <td>{{nama_dosen}}</td>
+            <td>{{semester}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
