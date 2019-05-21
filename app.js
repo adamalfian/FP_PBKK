@@ -43,6 +43,7 @@ app.get('/users', function (req, res) {
 app.get('/rekap/:kode_mk', function(req, res){
     var kode_mk = req.params.kode_mk;
     var request = require("request");
+    var temp=[];
 
     var options = {
         method: 'GET',
@@ -60,7 +61,11 @@ app.get('/rekap/:kode_mk', function(req, res){
         console.log(body);        
         var obj = JSON.parse(body);
         console.log(obj.values.length);
-        res.render('rekap_matakuliah', obj.values);
+        temp = {
+            'kode_mk': kode_mk,
+            'rekap': obj.values
+        }
+        res.render('rekap_matakuliah', temp);
     });
 
 });
@@ -68,6 +73,7 @@ app.get('/rekap/:kode_mk', function(req, res){
 app.get('/rekap/:kode_mk/:id_pertemuan', function (req, res) {
     var kode_mk = req.params.kode_mk;
     var id_pertemuan = req.params.id_pertemuan;
+    var temp=[];
 
     var request = require("request");
 
@@ -87,7 +93,12 @@ app.get('/rekap/:kode_mk/:id_pertemuan', function (req, res) {
         console.log(body);
         var obj = JSON.parse(body);
         console.log(obj.values);
-        res.render('pertemu_rekap_matakuliah', obj.values);
+        temp = {
+            'mhs': obj.values,
+            'kode_mk': kode_mk,
+            'id_pertemuan': id_pertemuan
+        }
+        res.render('pertemu_rekap_matakuliah', temp);
         
     });
 
@@ -96,7 +107,7 @@ app.get('/rekap/:kode_mk/:id_pertemuan', function (req, res) {
 app.get('/rekapmahasiswa/:nrp/:kode_mk', function (req, res) {
     var nrp = req.params.nrp;
     var kode_mk = req.params.kode_mk;
-    
+    var temp= [];
     var request = require("request");
 
     var options = {
@@ -115,14 +126,20 @@ app.get('/rekapmahasiswa/:nrp/:kode_mk', function (req, res) {
         console.log(body);
         var obj = JSON.parse(body);
         console.log(obj.values);
-        res.render('rekap_mahasiswa', obj.values);
+        temp = {
+            'values': obj.values,
+            'nrp': nrp,
+            'kode_mk': kode_mk 
+        }
+        res.render('rekap_mahasiswa', temp);
     });
 
 });
 
-app.get('/rekapmahasiswa2/:nrp/:semester', function (req, res) {
+app.get('/rekapmhs/:nrp/:semester', function (req, res) {
     var nrp = req.params.nrp;
     var semester = req.params.semester;
+    var temp=[];
 
     var request = require("request");
 
@@ -142,7 +159,12 @@ app.get('/rekapmahasiswa2/:nrp/:semester', function (req, res) {
         console.log(body);
         var obj = JSON.parse(body);
         console.log(obj.values);
-        res.render('rekap_mahasiswa', obj.values);
+        temp = {
+            'values': obj.values,
+            'nrp': nrp,
+            'semester': semester
+        }
+        res.render('rekap_mahasiswa_semester', temp);
     });
 })
 
