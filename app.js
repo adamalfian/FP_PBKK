@@ -278,6 +278,43 @@ function addMahasiswa(nrp, nama, pass){
     });
 
 }
+
+app.get('/absen', function (req, res) {
+    res.render('absen', { title: "Absen Lur!" });
+})
+
+app.post('/absen', function (req, res) {
+    var data = req.body;
+    console.log(data);
+    
+    var request = require("request");
+
+    var options = {
+        method: 'POST',
+        url: 'https://absenpbkkonline.herokuapp.com/absen',
+        headers:
+        {
+            'postman-token': 'd134727f-9cf3-63f6-a050-7dd954cee4fa',
+            'cache-control': 'no-cache',
+            'content-type': 'application/x-www-form-urlencoded'
+        },
+        form: { 
+            nrp: data.nrp, 
+            id_jadwal: data.id_jadwal, 
+            status: '1' }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        console.log(response);
+        console.log(body);
+        var dumps = JSON.parse(body);
+        res.render('absensukses', dumps);
+
+    });
+})
+
 app.listen(3000, function (req, res) {
     console.log("App start at port 3000");
 });
