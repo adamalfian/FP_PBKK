@@ -1,23 +1,17 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Kode Mata Kuliah</th>
-            <th>Pertemuan</th>
-            <th>Hari</th>
-            <th>Jam Masuk</th>
-            <th>Jam Pulang</th>
-            <th>Ruang</th>
+            <th>Mahasiswa</th>
+            <th>Nama Mata Kuliah</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
         {{#each this}}
         <tr>
-            <td>{{fk_kode_mk}}</td>
-            <td>{{id_pertemuan}}</td>
-            <td>{{hari}}</td>
-            <td>{{jam_masuk}}</td>
-            <td>{{jam_pulang}}</td>
-            <td>{{ruang}}</td>
+            <td>{{nama}}</td>
+            <td>{{nama_matkul}}</td>
+            <td>{{status}}</td>
         </tr>
         {{/each}}
     </tbody>

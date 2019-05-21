@@ -1,17 +1,19 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>NRP</th>
-            <th>Kode Mata Kuliah</th>
-            <th>Semester</th>
+            <th>Mahasiswa</th>
+            <th>Nama Mata Kuliah</th>
+            <th>Pertemuen Ke</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
         {{#each this}}
         <tr>
-            <td>{{nrp}}</td>
-            <td>{{kode_mk}}</td>
-            <td>{{semester}}</td>
+            <td>{{nama}}</td>
+            <td>{{nama_matkul}}</td>
+            <td>{{pertemuan_ke}}</td>
+            <td>{{status}}</td>
         </tr>
         {{/each}}
     </tbody>

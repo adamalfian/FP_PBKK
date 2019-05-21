@@ -15,12 +15,15 @@ app.engine('handlebars', exphandlebars({
 }));
 app.set('view engine', 'handlebars');
 
-
 app.get('/', function (req, res) {
+    res.redirect('/users');
+})
+
+app.get('/users', function (req, res) {
     var dataDumps;
 
     var options = { method: 'GET',
-    url: 'http://13.67.55.177:8445/users',
+        url: 'https://absenpbkkonline.herokuapp.com/users',
     headers: 
     { 'postman-token': 'a7462e73-e867-f4e7-c8ec-da48dcef8f7e',
         'cache-control': 'no-cache' } };
@@ -43,7 +46,7 @@ app.get('/rekap/:kode_mk', function(req, res){
 
     var options = {
         method: 'GET',
-        url: 'http://13.67.55.177:8445/rekap/' + kode_mk,
+        url: 'https://absenpbkkonline.herokuapp.com/rekap/' + kode_mk,
         headers:
         {
             'postman-token': '184d17e1-52fb-0c40-469a-f37113bab8b3',
@@ -70,7 +73,7 @@ app.get('/rekap/:kode_mk/:id_pertemuan', function (req, res) {
 
     var options = {
         method: 'GET',
-        url: 'http://13.67.55.177:8445/rekap/' + kode_mk + '/' + id_pertemuan,
+        url: 'https://absenpbkkonline.herokuapp.com/rekap/' + kode_mk + '/' + id_pertemuan,
         headers:
         {
             'postman-token': '4490d158-8e70-54e3-2028-2aa0976942e3',
@@ -98,7 +101,7 @@ app.get('/rekapmahasiswa/:nrp/:kode_mk', function (req, res) {
 
     var options = {
         method: 'GET',
-        url: 'http://13.67.55.177:8445/rekapmahasiswa/' + nrp + '/' + kode_mk + '/',
+        url: 'https://absenpbkkonline.herokuapp.com/rekapmahasiswa/' + nrp + '/' + kode_mk + '/',
         headers:
         {
             'postman-token': '1b0644c0-e77c-46b5-ca44-de94bf042840',
@@ -117,6 +120,32 @@ app.get('/rekapmahasiswa/:nrp/:kode_mk', function (req, res) {
 
 });
 
+app.get('/rekapmahasiswa2/:nrp/:semester', function (req, res) {
+    var nrp = req.params.nrp;
+    var semester = req.params.semester;
+
+    var request = require("request");
+
+    var options = {
+        method: 'GET',
+        url: 'https://absenpbkkonline.herokuapp.com/rekapmahasiswa2/' + nrp + '/' + semester,
+        headers:
+        {
+            'postman-token': '63fd7279-4b15-22c5-d144-72b8d9707a49',
+            'cache-control': 'no-cache'
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        console.log(body);
+        var obj = JSON.parse(body);
+        console.log(obj.values);
+        res.render('rekap_mahasiswa', obj.values);
+    });
+})
+
 app.get('/tambahmatkul', function (req, res) {
     res.render('tambahMatkul', { title: "Tambah Mata Kuliah"});
 });
@@ -124,13 +153,24 @@ app.get('/tambahmatkul', function (req, res) {
 app.post('/tambahmatkul', function (req, res) {
     var data = req.body;
     var dumps;
-    var options = { method: 'POST',
-        url: 'http://13.67.55.177:8445/tambahmatkul',
-        headers: 
-        { 'postman-token': '832db1a0-1f76-486b-7bff-a20709fb99cc',
+
+    var request = require("request");
+
+    var options = {
+        method: 'POST',
+        url: 'https://absenpbkkonline.herokuapp.com/tambahmatkul',
+        headers:
+        {
+            'postman-token': '1b756c02-bd6a-f484-7ff6-734971cd935c',
             'cache-control': 'no-cache',
-            'content-type': 'application/x-www-form-urlencoded' },
-        form: { kode_mk: data.kode_mk, mata_kuliah: data.mata_kuliah, kelas: data.kelas }
+            'content-type': 'application/x-www-form-urlencoded'
+        },
+        form:
+        {
+            kode_matkul: data.kode_mk,
+            nama_matkul: data.mata_kuliah,
+            semester: data.semester
+        }
     };
 
     request(options, function (error, response, body) {
@@ -140,7 +180,6 @@ app.post('/tambahmatkul', function (req, res) {
         console.log(body);
         dumps = JSON.parse(body);
         res.render('tambahMatkulsukses', dumps);
-
     });
 });
 
@@ -153,19 +192,17 @@ app.route('/tambahjadwal')
         var dumps;
         var options = { 
             method: 'POST',
-            url: 'http://13.67.55.177:8445/tambahjadwal',
+            url: 'https://absenpbkkonline.herokuapp.com/tambahjadwal',
             headers: {
                 'postman-Token': '52a8a49e-1fe1-4cd3-994d-74bb3db7d6d6',
                 'cache-control': 'no-cache',
                 'content-type': 'application/x-www-form-urlencoded'
             },
             form: { 
-                fk_kode_mk: data.fk_kode_mk, 
-                pertemuan: data.pertemuan, 
-                jam_masuk: data.jam_masuk,
-                jam_pulang: data.jam_pulang,
-                ruang: data.ruang,
-                // hari: 'senin'
+                kode_matkul: data.fk_kode_mk, 
+                pertemuan_ke: data.pertemuan, 
+                start: data.jam_masuk,
+                end: data.jam_pulang,
             }
         };
 
@@ -189,14 +226,14 @@ app.route('/tambahpeserta')
         var dumps;
         var options = { 
             method: 'POST',
-            url: 'http://13.67.55.177:8445/tambahpeserta/'+ data.nrp + '/' + data.kode_mk,
+            url: 'https://absenpbkkonline.herokuapp.com/tambahpeserta/',
             headers: {
                 'postman-Token': '52a8a49e-1fe1-4cd3-994d-74bb3db7d6d6',
                 'cache-control': 'no-cache',
                 'content-type': 'application/x-www-form-urlencoded'
             },
             form: { 
-                kode_mk: data.kode_mk, 
+                kode_matkul: data.kode_mk, 
                 nrp: data.nrp, 
             }
         };
@@ -227,7 +264,7 @@ function addMahasiswa(nrp, nama, pass){
     var request = require("request");
 
     var options = { method: 'POST',
-    url: 'http://13.67.55.177:8445/tambahmahasiswa',
+        url: 'https://absenpbkkonline.herokuapp.com/tambahmahasiswa',
     headers: 
     { 'postman-token': '7cd0db8c-32c7-a7ff-b7f2-77702b045c94',
         'cache-control': 'no-cache',
