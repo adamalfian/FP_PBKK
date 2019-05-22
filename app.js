@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var exphandlebars = require('express-handlebars');
 var request = require("request");
+var datetime = require("node-datetime");
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,7 +18,7 @@ app.set('view engine', 'handlebars');
 
 app.get('/', function (req, res) {
     res.redirect('/users');
-})
+});
 
 app.get('/users', function (req, res) {
     var dataDumps;
@@ -64,7 +65,7 @@ app.get('/rekap/:kode_mk', function(req, res){
         temp = {
             'kode_mk': kode_mk,
             'rekap': obj.values
-        }
+        };
         res.render('rekap_matakuliah', temp);
     });
 
@@ -97,7 +98,7 @@ app.get('/rekap/:kode_mk/:id_pertemuan', function (req, res) {
             'mhs': obj.values,
             'kode_mk': kode_mk,
             'id_pertemuan': id_pertemuan
-        }
+        };
         res.render('pertemu_rekap_matakuliah', temp);
         
     });
@@ -130,7 +131,7 @@ app.get('/rekapmahasiswa/:nrp/:kode_mk', function (req, res) {
             'values': obj.values,
             'nrp': nrp,
             'kode_mk': kode_mk 
-        }
+        };
         res.render('rekap_mahasiswa', temp);
     });
 
@@ -163,10 +164,10 @@ app.get('/rekapmhs/:nrp/:semester', function (req, res) {
             'values': obj.values,
             'nrp': nrp,
             'semester': semester
-        }
+        };
         res.render('rekap_mahasiswa_semester', temp);
     });
-})
+});
 
 app.get('/tambahmatkul', function (req, res) {
     res.render('tambahMatkul', { title: "Tambah Mata Kuliah"});
@@ -212,6 +213,11 @@ app.route('/tambahjadwal')
     .post(function (req, res) {
         var data = req.body;
         var dumps;
+
+        var dt = datetime.create().format('Y-m-d');
+        jamMasuk = dt + ' ' + data.jam_masuk + ':00';
+        jamPulang = dt + ' ' + data.jam_pulang + ':00';
+
         var options = { 
             method: 'POST',
             url: 'https://absenpbkkonline.herokuapp.com/tambahjadwal',
@@ -223,8 +229,8 @@ app.route('/tambahjadwal')
             form: { 
                 kode_matkul: data.fk_kode_mk, 
                 pertemuan_ke: data.pertemuan, 
-                start: data.jam_masuk,
-                end: data.jam_pulang,
+                start: jamMasuk,
+                end: jamPulang,
             }
         };
 
@@ -303,7 +309,7 @@ function addMahasiswa(nrp, nama, pass){
 
 app.get('/absen', function (req, res) {
     res.render('absen', { title: "Absen Lur!" });
-})
+});
 
 app.post('/absen', function (req, res) {
     var data = req.body;
@@ -335,7 +341,7 @@ app.post('/absen', function (req, res) {
         res.render('absensukses', dumps);
 
     });
-})
+});
 
 app.listen(3000, function (req, res) {
     console.log("App start at port 3000");
